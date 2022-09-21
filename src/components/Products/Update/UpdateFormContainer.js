@@ -4,11 +4,10 @@ import PropTypes from 'prop-types';
 import {getProductById} from '../../../reducers/products';
 import ProductForm from './ProductForm';
 import {Link} from 'react-router-dom';
-import {updateProductForm} from '../../../actions/products';
 
 class UpdateFormContainer extends Component {
     render() {
-        const {product, categories, dispatch} = this.props;
+        const {product, categories} = this.props;
 
         if (!product) {
             return null;

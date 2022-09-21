@@ -7,6 +7,10 @@ import UpdateFormContainer from './components/Products/Update/UpdateFormContaine
 import AddFormContainer from './components/Products/Add/AddFormContainer';
 
 class App extends Component {
+	constructor(props) {
+        super(props);
+        this.state = { name: '' };
+    }
 	render() {
 		return (
 			<Main>
