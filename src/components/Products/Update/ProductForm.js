@@ -127,8 +127,7 @@ const ProductForm = (props) => {
       <FormGroup>
         <Label for="expirationDate">Expiration date</Label>
         <Input
-         max={lastday}
-         min={today}
+          min={lastday}
           type="date"
           name="expirationDate"
           id="expirationDate"
