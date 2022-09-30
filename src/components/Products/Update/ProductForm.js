@@ -9,7 +9,12 @@ import {
   Label,
 } from "reactstrap";
 import { getMultiSelected, repeat } from "../../../utils";
-import { isCategoriesValid, isNameValid } from "./validators";
+import {
+  isBrandValid,
+  isCategoriesValid,
+  isItemsValid,
+  isNameValid,
+} from "./validators";
 
 const ProductForm = (props) => {
   const { product = {} } = props;
@@ -22,33 +27,35 @@ const ProductForm = (props) => {
   const [expirationDate, setExpirationDate] = useState(
     product.expirationDate || ""
   );
-  const [featured, setFeatured] = useState(product.featured  );
-  const [today,setToday]=React.useState(null)
-  const [lastday,setLastday]=React.useState(null)
-
-
-
-  React.useEffect(()=>{
-    rating>7 ? setFeatured(true) :setFeatured(false);
-    var currentDate = new Date()
-    setToday(currentDate.toISOString().split('T')[0])
+  const [featured, setFeatured] = useState(product.featured || false);
+  const [lastday, setLastday] = React.useState(null);
+  
+  //get expirationDate after 30 days
+  React.useEffect(() => {
+    rating > 7 ? setFeatured(true) : setFeatured(false);
+    var currentDate = new Date();
     currentDate.setDate(currentDate.getDate() + 30);
-    var dateString = currentDate.toISOString().split('T')[0]; 
-   setLastday(dateString)
-  },[rating])
+    var dateString = currentDate.toISOString().split("T")[0];
+    setLastday(dateString);
+  }, [rating]);
 
+// contol fields and insert data
   const onSubmit = (e) => {
     e.preventDefault();
-    props.onSave({
-      name,
-      brand,
-      rating,
-      categories,
-      itemsInStock,
-      receiptDate,
-      expirationDate,
-      featured,
-    });
+    if (name && brand && categories && receiptDate && expirationDate) {
+      props.onSave({
+        name,
+        brand,
+        rating,
+        categories,
+        itemsInStock,
+        receiptDate,
+        expirationDate,
+        featured,
+      });
+    } else {
+      alert("check fields");
+    }
   };
 
   return (
@@ -71,6 +78,7 @@ const ProductForm = (props) => {
       <FormGroup>
         <Label for="brand">Brand</Label>
         <Input
+          invalid={!isBrandValid(brand)}
           type="text"
           name="brand"
           id="brand"
@@ -78,6 +86,7 @@ const ProductForm = (props) => {
           value={brand}
           onChange={({ target }) => setBrand(target.value)}
         />
+        <FormFeedback>Brand is required!</FormFeedback>
       </FormGroup>
       <FormGroup>
         <Label for="rating">Rating</Label>
@@ -117,12 +126,14 @@ const ProductForm = (props) => {
       <FormGroup>
         <Label for="itemsInStock">Items In Stock</Label>
         <Input
+          invalid={!isItemsValid(itemsInStock)}
           type="number"
           name="itemsInStock"
           id="itemsInStock"
           value={itemsInStock}
           onChange={({ target }) => setItemsInStock(target.value)}
         />
+        <FormFeedback>Items In Stock must be positive</FormFeedback>
       </FormGroup>
       <FormGroup>
         <Label for="expirationDate">Expiration date</Label>
@@ -142,7 +153,6 @@ const ProductForm = (props) => {
       <FormGroup>
         <Label for="receiptDate">Receipt date</Label>
         <Input
-         
           type="date"
           name="receiptDate"
           id="receiptDate"
